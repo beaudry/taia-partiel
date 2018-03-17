@@ -39,18 +39,19 @@ class BayesNaif:
 		nous allons faire d'autres tests sur les données de test dans la méthode test()
 		"""
 
-		self.classes = set(train_labels)
+		self.classes = np.unique(train_labels)
 		self.moyenne = np.mean(train, axis=0)
 		self.ecart_type = np.std(train, axis=0)
 
-		nb_classe = self.classes
+		nb_classe = len(self.classes)
 		nb_attributs = train.shape[1]
 
 		self.moyenne_classe = np.empty((nb_classe, nb_attributs))
 		self.ecart_type_classe = np.empty((nb_classe, nb_attributs))
 		self.p_c = np.empty((nb_classe,))
 
-		print(len(self.classes))
+		# print(train_labels)
+		# print(nb_classe)
 
 	def predict(self, exemple, label):
 		"""

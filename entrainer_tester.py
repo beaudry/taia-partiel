@@ -2,7 +2,7 @@
 import numpy as np
 import sys
 import load_datasets
-import BayesNaif # importer la classe du classifieur bayesien
+from BayesNaif import BayesNaif # importer la classe du classifieur bayesien
 from Knn import Knn # importer la classe du Knn
 #importer d'autres fichiers et classes si vous en avez développés
 
@@ -24,16 +24,15 @@ En gros, vous allez :
 
 
 # Initializer/instanciez vos classifieurs avec leurs paramètres
-classifier = Knn()
-
-
+classifierKnn = Knn()
+classifierBN = BayesNaif()
 
 # Charger/lire les datasets
 train, train_labels, test, test_labels = load_datasets.load_iris_dataset(0.5)
 
-
 # Entrainez votre classifieur
-classifier.train(train, train_labels)
+#classifierKnn.train(train, train_labels)
+classifierBN.train(train, train_labels)
 
 
 
