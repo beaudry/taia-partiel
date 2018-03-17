@@ -51,7 +51,7 @@ class BayesNaif:
 		self.p_c = np.empty((nb_classe,))
 
 		for classe in self.classes:
-			#indices = np.where(train_labels = classe)
+			indices = np.where(train_labels = classe)
 			self.moyenne_classe[classe] = np.mean(train[indices], axis=0)
 			self.ecart_type[classe] = np.std(train[indices], axis=0)
 			self.p_c[classe] = indices[0].shape[0]/ float(train.shape[0])
