@@ -38,12 +38,11 @@ def load_iris_dataset(train_ratio):
     dataset = []
     
     for line in f:
-        data = line.replace('\n', '').split(',')
-        if data != ['']:
-            for i in range(4):
-                data[i] = float(data[i])
-            data[4] = conversion_labels[data[4]]
-            dataset.append(data)
+        data = line.strip().split(',')
+        for i in range(4):
+            data[i] = float(data[i])
+        data[4] = conversion_labels[data[4]]
+        dataset.append(data)
 
     data = np.array(dataset)
     random.shuffle(dataset)
@@ -102,11 +101,10 @@ def load_congressional_dataset(train_ratio):
     dataset = []
     
     for line in f:
-        data = line.replace('\n', '').split(',')
-        if data != ['']:
-            for i in range(len(data)):
-                data[i] = conversion_labels[data[i]]
-            dataset.append(data)
+        data = line.strip().split(',')
+        for i in range(len(data)):
+            data[i] = conversion_labels[data[i]]
+        dataset.append(data)
 
     random.shuffle(dataset)
 	
@@ -146,7 +144,27 @@ def load_monks_dataset(numero_dataset):
 	
 	
 	# TODO : votre code ici, vous devez lire les fichiers .train et .test selon l'argument numero_dataset
+    train_dataset = open('datasets/monks-{}.train'.format(numero_dataset, 'r'))
+    test_dataset = open('datasets/monks-{}.test'.format(numero_dataset, 'r'))
+
+    # TODO : le code ici pour lire le dataset
+    datasets = []
+
+    for f in [train_dataset, test_dataset]:
+        dataset = []
+        for line in f:
+            data = line.strip().split(' ')
+
+            for i in range(len(data) - 1):
+                data[i] = int(data[i])
+            dataset.append(data)
+
+        random.shuffle(dataset)
+        datasets.append(np.array(dataset))
+
+    train, train_labels, test, test_labels = datasets[0][:, :-1], datasets[0][:, -1:],  datasets[1][:, :-1], datasets[1][:, -1:]
 
     # La fonction doit retourner 4 matrices (ou vecteurs) de type Numpy. 
     return (train, train_labels, test, test_labels)
-load_congressional_dataset(0.5)
+
+load_monks_dataset(2)
