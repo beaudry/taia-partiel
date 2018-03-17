@@ -48,7 +48,7 @@ def load_iris_dataset(train_ratio):
     data = np.array(dataset)
     random.shuffle(dataset)
     ratio = round(len(data) * train_ratio)
-    train, train_labels, test, test_labels = data[:ratio, :4], data[ratio:, 4:], data[ratio:, :4], data[:ratio, 4:]
+    train, train_labels, test, test_labels = data[:ratio, :4], data[:ratio, 4:], data[ratio:, :4], data[ratio:, 4:]
 
     # REMARQUE très importante : 
 	# remarquez bien comment les exemples sont ordonnés dans 
@@ -108,7 +108,10 @@ def load_congressional_dataset(train_ratio):
                 data[i] = conversion_labels[data[i]]
             dataset.append(data)
 
+    data = np.array(dataset)
     random.shuffle(dataset)
+    ratio = round(len(data) * train_ratio)
+    train, train_labels, test, test_labels = data[:ratio, 1:], data[:ratio, :1], data[ratio:, 1:], data[ratio:, :1]
 	
 	# La fonction doit retourner 4 structures de données de type Numpy.
     return (train, train_labels, test, test_labels)
@@ -149,4 +152,4 @@ def load_monks_dataset(numero_dataset):
 
     # La fonction doit retourner 4 matrices (ou vecteurs) de type Numpy. 
     return (train, train_labels, test, test_labels)
-load_congressional_dataset(0.5)
+load_congressional_dataset(0.75)
