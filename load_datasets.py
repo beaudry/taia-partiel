@@ -109,7 +109,6 @@ def load_congressional_dataset(train_ratio):
             dataset.append(data)
 
     random.shuffle(dataset)
-    print(dataset)
 	
 	# La fonction doit retourner 4 structures de données de type Numpy.
     return (train, train_labels, test, test_labels)
