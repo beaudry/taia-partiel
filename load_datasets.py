@@ -149,7 +149,6 @@ def load_monks_dataset(numero_dataset):
         dataset = []
         for line in f:
             data = line.strip().split(' ')
-
             for i in range(len(data) - 1):
                 data[i] = int(data[i])
             dataset.append(data)
