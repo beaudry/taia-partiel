@@ -33,10 +33,20 @@ def load_iris_dataset(train_ratio):
     
     # Le fichier du dataset est dans le dossier datasets en attaché 
     f = open('datasets/bezdekIris.data', 'r')
-    
-    
+        
     # TODO : le code ici pour lire le dataset
+    dataset = []
     
+    for line in f:
+        data = line.replace('\n', '').split(',')
+        if data != ['']:
+            for i in range(4):
+                data[i] = float(data[i])
+            data[4] = conversion_labels[data[4]]
+            dataset.append(data)
+
+    random.shuffle(dataset)
+
     # REMARQUE très importante : 
 	# remarquez bien comment les exemples sont ordonnés dans 
     # le fichier du dataset, ils sont ordonnés par type de fleur, cela veut dire que 
@@ -128,3 +138,4 @@ def load_monks_dataset(numero_dataset):
 
     # La fonction doit retourner 4 matrices (ou vecteurs) de type Numpy. 
     return (train, train_labels, test, test_labels)
+load_iris_dataset(0.5)
