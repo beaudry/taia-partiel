@@ -47,9 +47,7 @@ def load_iris_dataset(train_ratio):
     data = np.array(dataset)
     ratio = round(len(data) * train_ratio)
     train, train_labels, test, test_labels = data[:ratio, :4], data[:ratio, 4:], data[ratio:, :4], data[ratio:, 4:]
-
-    print(data)
-
+    
     # REMARQUE très importante : 
 	# remarquez bien comment les exemples sont ordonnés dans 
     # le fichier du dataset, ils sont ordonnés par type de fleur, cela veut dire que 
