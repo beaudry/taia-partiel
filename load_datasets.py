@@ -45,7 +45,10 @@ def load_iris_dataset(train_ratio):
             data[4] = conversion_labels[data[4]]
             dataset.append(data)
 
+    data = np.array(dataset)
     random.shuffle(dataset)
+    ratio = round(len(data) * train_ratio)
+    train, train_labels, test, test_labels = data[:ratio, :4], data[ratio:, 4:], data[ratio:, :4], data[:ratio, 4:]
 
     # REMARQUE très importante : 
 	# remarquez bien comment les exemples sont ordonnés dans 
