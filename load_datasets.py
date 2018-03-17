@@ -1,3 +1,4 @@
+# coding=UTF-8
 import numpy as np
 import random
 
@@ -28,23 +29,27 @@ def load_iris_dataset(train_ratio):
     
     random.seed(1) # Pour avoir les meme nombres aléatoires à chaque initialisation.
     
+    # Vous pouvez utiliser des valeurs numériques pour les différents types de classes, tel que :
     conversion_labels = {'Iris-setosa': 0, 'Iris-versicolor' : 1, 'Iris-virginica' : 2}
     
+    # Le fichier du dataset est dans le dossier datasets en attaché 
     f = open('datasets/bezdekIris.data', 'r')
         
+    # TODO : le code ici pour lire le dataset
     dataset = []
     
     for line in f:
         data = line.strip().split(',')
-        for i in range(4):
-            data[i] = float(data[i])
-        data[4] = conversion_labels[data[4]]
-        dataset.append(data)
+        if data != ['']:
+            for i in range(4):
+                data[i] = float(data[i])
+            data[4] = conversion_labels[data[4]]
+            dataset.append(data)
 
     data = np.array(dataset)
     random.shuffle(dataset)
     ratio = round(len(data) * train_ratio)
-    train, train_labels, test, test_labels = data[:ratio, :4], data[:ratio, 4:], data[ratio:, :4], data[ratio:, 4:]
+    train, train_labels, test, test_labels = data[:ratio, :4], data[ratio:, 4:], data[ratio:, :4], data[:ratio, 4:]
 
     # REMARQUE très importante : 
 	# remarquez bien comment les exemples sont ordonnés dans 
@@ -91,21 +96,22 @@ def load_congressional_dataset(train_ratio):
     conversion_labels = {'republican' : 0, 'democrat' : 1, 
                          'n' : 0, 'y' : 1, '?' : 2} 
     
+    # Le fichier du dataset est dans le dossier datasets en attaché 
     f = open('datasets/house-votes-84.data', 'r')
 
+    # TODO : le code ici pour lire le dataset
     dataset = []
     
     for line in f:
         data = line.strip().split(',')
-        for i in range(len(data)):
-            data[i] = conversion_labels[data[i]]
-        dataset.append(data)
+        if data != ['']:
+            for i in range(len(data)):
+                data[i] = conversion_labels[data[i]]
+            dataset.append(data)
 
-    data = np.array(dataset)
     random.shuffle(dataset)
-    ratio = round(len(data) * train_ratio)
-    train, train_labels, test, test_labels = data[:ratio, 1:], data[:ratio, :1], data[ratio:, 1:], data[ratio:, :1]
 	
+	# La fonction doit retourner 4 structures de données de type Numpy.
     return (train, train_labels, test, test_labels)
 	
 
@@ -140,9 +146,11 @@ def load_monks_dataset(numero_dataset):
     """
 	
 	
+	# TODO : votre code ici, vous devez lire les fichiers .train et .test selon l'argument numero_dataset
     train_dataset = open('datasets/monks-{}.train'.format(numero_dataset, 'r'))
     test_dataset = open('datasets/monks-{}.test'.format(numero_dataset, 'r'))
 
+    # TODO : le code ici pour lire le dataset
     datasets = []
 
     for f in [train_dataset, test_dataset]:
@@ -150,13 +158,17 @@ def load_monks_dataset(numero_dataset):
         for line in f:
             data = line.strip().split(' ')
 
-            for i in range(len(data) - 1):
-                data[i] = int(data[i])
-            dataset.append(data)
+            if data != ['']:
+                for i in range(len(data) - 1):
+                    data[i] = int(data[i])
+                dataset.append(data)
 
         random.shuffle(dataset)
         datasets.append(np.array(dataset))
 
     train, train_labels, test, test_labels = datasets[0][:, :-1], datasets[0][:, -1:],  datasets[1][:, :-1], datasets[1][:, -1:]
 
+    # La fonction doit retourner 4 matrices (ou vecteurs) de type Numpy. 
     return (train, train_labels, test, test_labels)
+
+load_monks_dataset(2)
