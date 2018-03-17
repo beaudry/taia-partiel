@@ -46,7 +46,11 @@ def load_iris_dataset(train_ratio):
     random.shuffle(dataset)    
     data = np.array(dataset)
     ratio = round(len(data) * train_ratio)
-    train, train_labels, test, test_labels = data[:ratio, :4], data[:ratio, 4:], data[ratio:, :4], data[ratio:, 4:]
+
+    train = data[:ratio, :-1]
+    train_labels = np.array([item[-1] for item in data[:ratio]])
+    test = data[ratio:, :-1]
+    test_labels = np.array([item[-1] for item in data[ratio:]])
 
     # REMARQUE très importante : 
 	# remarquez bien comment les exemples sont ordonnés dans 
@@ -107,7 +111,11 @@ def load_congressional_dataset(train_ratio):
     random.shuffle(dataset)
     data = np.array(dataset)
     ratio = round(len(data) * train_ratio)
-    train, train_labels, test, test_labels = data[:ratio, 1:], data[:ratio, :1], data[ratio:, 1:], data[ratio:, :1]
+
+    train = data[:ratio, 1:]
+    train_labels = np.array([item[1] for item in data[:ratio]])
+    test = data[ratio:, 1:]
+    test_labels = np.array([item[1] for item in data[ratio:]])
 	
     return (train, train_labels, test, test_labels)
 	
@@ -156,13 +164,17 @@ def load_monks_dataset(numero_dataset):
             if data != ['']:
                 for i in range(len(data) - 1):
                     data[i] = int(data[i])
+                data[-1] = int(data[-1].replace('data_', ''))
                 dataset.append(data)
 
         random.shuffle(dataset)
         datasets.append(np.array(dataset))
 
-    train, train_labels, test, test_labels = datasets[0][:, :-1], datasets[0][:, -1:],  datasets[1][:, :-1], datasets[1][:, -1:]
+    train, train_labels, test, test_labels = datasets[0][:, :-1], datasets[0][:, -1:], datasets[1][:, :-1], datasets[1][:, -1:]
+    
+    train = datasets[0][:, :-1]
+    train_labels = np.array([item[-1] for item in datasets[0]])
+    test = datasets[1][:, :-1]
+    test_labels = np.array([item[-1] for item in datasets[1]])
 
     return (train, train_labels, test, test_labels)
-
-load_monks_dataset(2)
