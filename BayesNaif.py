@@ -51,13 +51,10 @@ class BayesNaif:
 		self.p_c = np.empty((nb_classe,))
 
 		for classe in self.classes:
-			indices = np.where(train_labels = classe)
-			self.moyenne_classe[classe] = np.mean(train[indices], axis=0)
-			self.ecart_type[classe] = np.std(train[indices], axis=0)
-			self.p_c[classe] = indices[0].shape[0]/ float(train.shape[0])
-
-		#TODO: find why np.where isn't returning any indices
-		print(indices)
+			indices = np.where(train_labels == classe)			
+			self.moyenne_classe[int(classe)] = np.mean(train[indices], axis=0)
+			self.ecart_type[int(classe)] = np.std(train[indices], axis=0)
+			self.p_c[int(classe)] = indices[0].shape[0]/ float(train.shape[0])
 
 	def predict(self, exemple, label):
 		"""
@@ -68,6 +65,11 @@ class BayesNaif:
 		alors l'exemple est bien classifié, si non c'est une missclassification
 
 		"""
+		#TODO: Understand how to predict
+		evidence = self.pdf(exemple, self.moyenne, self.ecart_type)
+		print(evidence)
+		print(exemple)
+
 
 	def test(self, test, test_labels):
 		"""
@@ -90,3 +92,6 @@ class BayesNaif:
 		Bien entendu ces tests doivent etre faits sur les données de test seulement
 		
 		"""
+
+	def pdf(self, x,  moyenne, ecart_type):
+		return (1/(np.sqrt(2*np.pi) * ecart_type)) * np.exp(-((x-moyenne**2)/(2*ecart_type**2)))
