@@ -38,7 +38,7 @@ classifierKnn.train(train, train_labels)
 
 
 # Tester votre classifieur
-
+classifierBN.predict(test[0], test_labels[0])
 
 
 
