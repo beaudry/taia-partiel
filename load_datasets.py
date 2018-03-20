@@ -27,7 +27,7 @@ def load_iris_dataset(train_ratio):
           que : test_labels[i] est le label (ou l'etiquette) pour l'exemple test[i]
     """
     
-    random.seed(1) # Pour avoir les meme nombres aléatoires à chaque initialisation.
+    # random.seed(1) # Pour avoir les meme nombres aléatoires à chaque initialisation.
     
     conversion_labels = {'Iris-setosa': 0, 'Iris-versicolor' : 1, 'Iris-virginica' : 2}
     
@@ -91,7 +91,7 @@ def load_congressional_dataset(train_ratio):
           que : test_labels[i] est le label (ou l'etiquette) pour l'exemple test[i]
     """
     
-    random.seed(1) # Pour avoir les meme nombres aléatoires à chaque initialisation.
+    # random.seed(1) # Pour avoir les meme nombres aléatoires à chaque initialisation.
     
     # Vous pouvez utiliser un dictionnaire pour convertir les attributs en numériques 
     # Notez bien qu'on a traduit le symbole "?" pour une valeur numérique
@@ -118,7 +118,7 @@ def load_congressional_dataset(train_ratio):
     train_labels = np.array([item[0] for item in data[:ratio]])
     test = data[ratio:, 1:]
     test_labels = np.array([item[0] for item in data[ratio:]])
-    	
+
     return (train, train_labels, test, test_labels)
 	
 
@@ -153,8 +153,8 @@ def load_monks_dataset(numero_dataset):
     """
 	
 	
-    train_dataset = open('datasets/monks-{0}.train'.format(numero_dataset, 'r'))
-    test_dataset = open('datasets/monks-{0}.test'.format(numero_dataset, 'r'))
+    train_dataset = open('datasets/monks-{0}.train'.format(numero_dataset))
+    test_dataset = open('datasets/monks-{0}.test'.format(numero_dataset))
 
     datasets = []
 
