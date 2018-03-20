@@ -118,7 +118,7 @@ def load_congressional_dataset(train_ratio):
     train_labels = np.array([item[0] for item in data[:ratio]])
     test = data[ratio:, 1:]
     test_labels = np.array([item[0] for item in data[ratio:]])
-    	
+
     return (train, train_labels, test, test_labels)
 	
 
@@ -153,8 +153,8 @@ def load_monks_dataset(numero_dataset):
     """
 	
 	
-    train_dataset = open('datasets/monks-{0}.train'.format(numero_dataset, 'r'))
-    test_dataset = open('datasets/monks-{0}.test'.format(numero_dataset, 'r'))
+    train_dataset = open('datasets/monks-{0}.train'.format(numero_dataset))
+    test_dataset = open('datasets/monks-{0}.test'.format(numero_dataset))
 
     datasets = []
 

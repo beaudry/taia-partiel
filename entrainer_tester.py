@@ -28,7 +28,7 @@ classifierKnn = Knn()
 classifierBN = BayesNaif()
 
 # Charger/lire les datasets
-train, train_labels, test, test_labels = load_datasets.load_iris_dataset(0.65)
+train, train_labels, test, test_labels = load_datasets.load_monks_dataset(1)
 
 # Entrainez votre classifieur
 #classifierKnn.train(train, train_labels)

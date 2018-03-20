@@ -54,6 +54,9 @@ class BayesNaif:
 			self.ecart_type_classe[classe] = np.std(train[indices], axis=0)
 			self.p_c[classe] = indices[0].shape[0]/ float(train.shape[0])
 
+		print("TEST SUR DONNÉES D'ENTRAINEMENT")
+		self.test(train, train_labels)
+
 	def predict(self, exemple, label):
 		"""
 		Prédire la classe d'un exemple donné en entrée
@@ -70,14 +73,8 @@ class BayesNaif:
 			post_num = self.p_c[classe] * np.prod(post_num)
 			posterieures[classe] = post_num
 
-		# print(posterieures)
-		# print(np.unravel_index(np.argmax(posterieures, axis=None), posterieures.shape))
-		# print(np.unravel_index(np.argmax(posterieures, axis=None), posterieures.shape)[0])
-		# print(label)
-		# print(label == np.unravel_index(np.argmax(posterieures, axis=None), posterieures.shape)[0])
 		max_post_num = np.unravel_index(np.argmax(posterieures, axis=None), posterieures.shape)[0]
 		return max_post_num
-
 
 	def test(self, test, test_labels):
 		"""
@@ -100,19 +97,24 @@ class BayesNaif:
 		Bien entendu ces tests doivent etre faits sur les données de test seulement
 		
 		"""
-		
 		matrice_confusion = np.zeros((len(self.classes), len(self.classes)), dtype=int)
-		bonnes_predictions = 0 
 
 		for i in range(len(test)):
 			prediction = self.predict(test[i],test_labels[i])
 			matrice_confusion[prediction][test_labels[i]] += 1
 
+		print("-"*30)				
 		print("Matrice de confusion : ")
 		print(matrice_confusion)
+		print("-"*30)		
 		print("Accuracy : {0}%".format(np.trace(matrice_confusion)/len(test)*100))
-		print("Precision : {0}".format(bonnes_predictions))
-		print("Recall : {0}".format(bonnes_predictions))
+		print("-"*30)		
+		for i in range(len(self.classes)):
+			print("LABEL {0}".format(i))
+			print("Precision : {0}".format(matrice_confusion[i][i]/(np.sum(matrice_confusion, axis=1)[i])))
+			print("Recall : {0}".format(matrice_confusion[i][i]/(np.sum(matrice_confusion, axis=0)[i])))
+			print("-"*30)
+			
 
 	def distribution_proba(self, x,  moyenne, ecart_type):
 		return (1/(np.sqrt(2*np.pi) * ecart_type**2)) * np.exp(-((x-moyenne)**2)/(2*ecart_type**2))
