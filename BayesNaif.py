@@ -40,8 +40,6 @@ class BayesNaif:
 		"""
 
 		self.classes = np.unique(train_labels)
-		self.moyenne = np.mean(train, axis=0)
-		self.ecart_type = np.std(train, axis=0)
 
 		nb_classe = len(self.classes)
 		nb_attributs = train.shape[1]
@@ -52,9 +50,9 @@ class BayesNaif:
 
 		for classe in self.classes:
 			indices = np.where(train_labels == classe)			
-			self.moyenne_classe[int(classe)] = np.mean(train[indices], axis=0)
-			self.ecart_type[int(classe)] = np.std(train[indices], axis=0)
-			self.p_c[int(classe)] = indices[0].shape[0]/ float(train.shape[0])
+			self.moyenne_classe[classe] = np.mean(train[indices], axis=0)
+			self.ecart_type_classe[classe] = np.std(train[indices], axis=0)
+			self.p_c[classe] = indices[0].shape[0]/ float(train.shape[0])
 
 	def predict(self, exemple, label):
 		"""
@@ -65,10 +63,20 @@ class BayesNaif:
 		alors l'exemple est bien classifié, si non c'est une missclassification
 
 		"""
-		#TODO: Understand how to predict
-		evidence = self.pdf(exemple, self.moyenne, self.ecart_type)
-		print(evidence)
-		print(exemple)
+		posterieures = np.zeros(len(self.classes))
+
+		for classe in self.classes:	
+			post_num = self.distribution_proba(exemple, self.moyenne_classe[classe], self.ecart_type_classe[classe])
+			post_num = self.p_c[classe] * np.prod(post_num)
+			posterieures[classe] = post_num
+
+		# print(posterieures)
+		# print(np.unravel_index(np.argmax(posterieures, axis=None), posterieures.shape))
+		# print(np.unravel_index(np.argmax(posterieures, axis=None), posterieures.shape)[0])
+		# print(label)
+		# print(label == np.unravel_index(np.argmax(posterieures, axis=None), posterieures.shape)[0])
+		max_post_num = np.unravel_index(np.argmax(posterieures, axis=None), posterieures.shape)[0]
+		return max_post_num
 
 
 	def test(self, test, test_labels):
@@ -92,6 +100,19 @@ class BayesNaif:
 		Bien entendu ces tests doivent etre faits sur les données de test seulement
 		
 		"""
+		
+		matrice_confusion = np.zeros((len(self.classes), len(self.classes)), dtype=int)
+		bonnes_predictions = 0 
 
-	def pdf(self, x,  moyenne, ecart_type):
-		return (1/(np.sqrt(2*np.pi) * ecart_type)) * np.exp(-((x-moyenne**2)/(2*ecart_type**2)))
+		for i in range(len(test)):
+			prediction = self.predict(test[i],test_labels[i])
+			matrice_confusion[prediction][test_labels[i]] += 1
+
+		print("Matrice de confusion : ")
+		print(matrice_confusion)
+		print("Accuracy : {0}%".format(np.trace(matrice_confusion)/len(test)*100))
+		print("Precision : {0}".format(bonnes_predictions))
+		print("Recall : {0}".format(bonnes_predictions))
+
+	def distribution_proba(self, x,  moyenne, ecart_type):
+		return (1/(np.sqrt(2*np.pi) * ecart_type**2)) * np.exp(-((x-moyenne)**2)/(2*ecart_type**2))
