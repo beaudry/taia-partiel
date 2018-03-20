@@ -28,11 +28,11 @@ classifierKnn = Knn()
 classifierBN = BayesNaif()
 
 # Charger/lire les datasets
-train, train_labels, test, test_labels = load_datasets.load_iris_dataset(0.5)
+train, train_labels, test, test_labels = load_datasets.load_congressional_dataset(0.5)
 
 # Entrainez votre classifieur
-#classifierKnn.train(train, train_labels)
-classifierBN.train(train, train_labels)
+classifierKnn.train(train, train_labels)
+# classifierBN.train(train, train_labels)
 
 
 
