@@ -164,17 +164,11 @@ def load_monks_dataset(numero_dataset):
             data = line.strip().split(' ')
 
             if data != ['']:
-                for i in range(len(data) - 1):
-                    data[i] = int(data[i])
-                data[-1] = int(data[-1].replace('data_', ''))
-                dataset.append(data)
+                dataset.append(data[:-1])
 
         random.shuffle(dataset)
-        datasets.append(np.array(dataset))
+        datasets.append(np.array(dataset, dtype=int))
 
-    train, train_labels, test, test_labels = datasets[0][:, 1:-1], datasets[0][:, :1], datasets[1][:, 1:-1], datasets[1][:, :1]
-    
-    train_labels = np.array([item[0] for item in datasets[0]])
-    test_labels = np.array([item[0] for item in datasets[1]])
+    train, train_labels, test, test_labels = datasets[0][:, 1:], datasets[0][:, :1], datasets[1][:, 1:], datasets[1][:, :1]
 
     return (train, train_labels, test, test_labels)
