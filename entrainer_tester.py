@@ -32,9 +32,21 @@ train, train_labels, test, test_labels = load_datasets.load_iris_dataset(0.65)
 # train, train_labels, test, test_labels = load_datasets.load_congressional_dataset(0.5)
 
 # Entrainez votre classifieur
-# classifierKnn.train(train, train_labels)
+import time
+start_time = time.time()
+classifierKnn.train(train, train_labels)
+print("--- %s seconds ---" % (time.time() - start_time))
+
+start_time = time.time()
 classifierBN.train(train, train_labels)
+print("--- %s seconds ---" % (time.time() - start_time))
+
 
 # Tester votre classifieur
-# classifierKnn.test(test, test_labels)
+start_time = time.time()
+classifierKnn.test(test, test_labels)
+print("--- %s seconds ---" % (time.time() - start_time))
+
+start_time = time.time()
 classifierBN.test(test, test_labels)
+print("--- %s seconds ---" % (time.time() - start_time))
