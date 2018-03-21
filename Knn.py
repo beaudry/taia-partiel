@@ -11,9 +11,7 @@ class Knn:
 		Vous pouvez passer d'autre paramètres au besoin,
 		c'est à vous d'utiliser vos propres notations
 		"""
-		self.neighbors_number = 3
-		self.data = np.array([])
-		self.labels = np.array([])
+		self.neighbors_number = 5
 
 	def instance_distance(self, instance1, instance2):
 		total_distance = 0
@@ -57,42 +55,9 @@ class Knn:
 		"""
 		self.data = train[:]
 		self.labels = train_labels[:]
-		accuracy = 0
-		predicted_list = np.array([self.predict(self.data[i], self.labels[i]) for i in range(len(self.data))])
+		self.max_label = train_labels.max()
 
-		confusion_object = {}
-
-		for i in range(len(self.data)):
-			predicted_label = predicted_list[i]
-			real_label = self.labels[i]
-
-			if predicted_label not in confusion_object:
-				confusion_object[predicted_label] = {}
-			
-			if predicted_label is real_label:
-				accuracy += 1
-			
-			if real_label not in confusion_object[predicted_label]:
-				confusion_object[predicted_label][real_label] = 0
-
-			confusion_object[predicted_label][real_label] += 1
-		
-		for predicted_label in np.sort(predicted_list):
-			if predicted_label not in confusion_object:
-				confusion_object[predicted_label] = {}
-
-			for real_label in self.labels:
-				if real_label not in confusion_object[predicted_label]:
-					confusion_object[predicted_label][real_label] = 0
-				
-		#confusion matrix	
-		print(confusion_object[predicted_list[0]].keys())
-		for predicted_label in confusion_object.keys():
-			print(predicted_label, confusion_object[predicted_label].values())
-		
-		
-		print(accuracy / len(self.data))
-		
+		self.test(train, train_labels)
 
 	def predict(self, exemple, label):
 		"""
@@ -103,16 +68,14 @@ class Knn:
 		alors l'exemple est bien classifié, si non c'est une missclassification
 
 		"""
-		
 		nearest_neighbors = []
 		for i in range(self.neighbors_number):
 			nearest_neighbors.append((-np.inf, None))
-		
+
 		for i in range(len(self.data)):
 			distance = -self.instance_distance(self.data[i], exemple)
 			if nearest_neighbors[0][0] < distance:
 				heapq.heapreplace(nearest_neighbors, (distance, self.labels[i]))
-		
 
 		return int(round(np.average([neighbor[1] for neighbor in nearest_neighbors])))
 
@@ -123,18 +86,36 @@ class Knn:
 		l'argument test est une matrice de type Numpy et de taille nxm, avec 
 		n : le nombre d'exemple de test dans le dataset
 		m : le mobre d'attribus (le nombre de caractéristiques)
-		
+
 		test_labels : est une matrice numpy de taille nx1
-		
+
 		vous pouvez rajouter d'autres arguments, il suffit juste de
 		les expliquer en commentaire
-		
+
 		Faites le test sur les données de test, et afficher :
 		- la matrice de confision (confusion matrix)
 		- l'accuracy
 		- la précision (precision)
 		- le rappel (recall)
-		
+
 		Bien entendu ces tests doivent etre faits sur les données de test seulement
-		
+
 		"""
+		matrix_size = max(self.max_label, test_labels.max()) + 1
+		confusion_matrix = np.zeros((matrix_size, matrix_size), dtype=int)
+
+		for i in range(len(test)):
+			prediction = self.predict(test[i], test_labels[i])
+			confusion_matrix[prediction][test_labels[i]] += 1
+
+		print("–"*30)				
+		print("Matrice de confusion :")
+		print(confusion_matrix)
+		print("–"*30)		
+		print("Accuracy : {0}%".format(np.trace(confusion_matrix) / float(len(test)) * 100))
+		print("–"*30)
+		for i in range(matrix_size):
+			print("LABEL {0}".format(i))
+			print("Precision : {0}".format(confusion_matrix[i][i] / float(confusion_matrix.sum(axis=1)[i])))
+			print("Recall : {0}".format(confusion_matrix[i][i] / float(confusion_matrix.sum(axis=0)[i])))
+			print("–"*30)

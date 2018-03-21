@@ -20,9 +20,6 @@ En gros, vous allez :
 
 # Initializer vos paramètres
 
-
-
-
 # Initializer/instanciez vos classifieurs avec leurs paramètres
 classifierKnn = Knn()
 classifierBN = BayesNaif()
@@ -35,17 +32,9 @@ train, train_labels, test, test_labels = load_datasets.load_iris_dataset(0.5)
 # train, train_labels, test, test_labels = load_datasets.load_congressional_dataset(0.5)
 
 # Entrainez votre classifieur
-#classifierKnn.train(train, train_labels)
+# classifierKnn.train(train, train_labels)
 classifierBN.train(train, train_labels)
-
-
-
 
 # Tester votre classifieur
 # classifierKnn.test(test, test_labels)
 classifierBN.test(test, test_labels)
-
-
-
-
-
