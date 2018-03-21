@@ -110,12 +110,12 @@ class BayesNaif:
 		print("Matrice de confusion : ")
 		print(matrice_confusion)
 		print("–"*30)		
-		print("Accuracy : {0}%".format(np.trace(matrice_confusion)/len(test)*100))
+		print("Accuracy : {0}%".format(np.trace(matrice_confusion)/float(len(test))*100))
 		print("–"*30)		
 		for i in range(len(self.classes)):
 			print("LABEL {0}".format(i))
-			print("Precision : {0}".format(matrice_confusion[i][i]/(np.sum(matrice_confusion, axis=1)[i])))
-			print("Recall : {0}".format(matrice_confusion[i][i]/(np.sum(matrice_confusion, axis=0)[i])))
+			print("Precision : {0}".format(matrice_confusion[i][i]/float(np.sum(matrice_confusion, axis=1)[i])))
+			print("Recall : {0}".format(matrice_confusion[i][i]/float(np.sum(matrice_confusion, axis=0)[i])))
 			print("–"*30)
 			
 
