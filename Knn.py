@@ -11,6 +11,7 @@ class Knn:
 		Vous pouvez passer d'autre paramètres au besoin,
 		c'est à vous d'utiliser vos propres notations
 		"""
+		self.max_label = 0
 		self.neighbors_number = 5
 
 	def instance_distance(self, instance1, instance2):

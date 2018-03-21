@@ -9,6 +9,7 @@ class BayesNaif:
 		Vous pouvez passer d'autre paramètres au besoin,
 		c'est à vous d'utiliser vos propres notations
 		"""
+		self.max_label = 0
 		
 		
 	def train(self, train, train_labels):
@@ -54,7 +55,8 @@ class BayesNaif:
 			self.ecart_type_classe[classe] = np.std(train[indices], axis=0)
 			self.p_c[classe] = indices[0].shape[0]/ float(train.shape[0])
 
-		print("TEST SUR DONNÉES D'ENTRAINEMENT")
+		self.max_label = train_labels.max()
+
 		self.test(train, train_labels)
 
 	def predict(self, exemple, label):
@@ -97,23 +99,24 @@ class BayesNaif:
 		Bien entendu ces tests doivent etre faits sur les données de test seulement
 		
 		"""
-		matrice_confusion = np.zeros((len(self.classes), len(self.classes)), dtype=int)
+		matrix_size = max(self.max_label, test_labels.max()) + 1
+		matrice_confusion = np.zeros((matrix_size, matrix_size), dtype=int)
 
 		for i in range(len(test)):
 			prediction = self.predict(test[i],test_labels[i])
 			matrice_confusion[prediction][test_labels[i]] += 1
 
-		print("-"*30)				
+		print("–"*30)				
 		print("Matrice de confusion : ")
 		print(matrice_confusion)
-		print("-"*30)		
+		print("–"*30)		
 		print("Accuracy : {0}%".format(np.trace(matrice_confusion)/len(test)*100))
-		print("-"*30)		
+		print("–"*30)		
 		for i in range(len(self.classes)):
 			print("LABEL {0}".format(i))
 			print("Precision : {0}".format(matrice_confusion[i][i]/(np.sum(matrice_confusion, axis=1)[i])))
 			print("Recall : {0}".format(matrice_confusion[i][i]/(np.sum(matrice_confusion, axis=0)[i])))
-			print("-"*30)
+			print("–"*30)
 			
 
 	def distribution_proba(self, x,  moyenne, ecart_type):
