@@ -71,7 +71,7 @@ class BayesNaif:
 		posterieures = np.zeros(len(self.classes))
 
 		for classe in self.classes:	
-			post_num = self.distribution_proba(exemple, self.moyenne_classe[classe], self.ecart_type_classe[classe])
+			post_num = self.distribution_proba_gauss(exemple, self.moyenne_classe[classe], self.ecart_type_classe[classe])
 			post_num = self.p_c[classe] * np.prod(post_num)
 			posterieures[classe] = post_num
 
@@ -119,5 +119,5 @@ class BayesNaif:
 			print("–"*30)
 			
 
-	def distribution_proba(self, x,  moyenne, ecart_type):
+	def distribution_proba_gauss(self, x,  moyenne, ecart_type):
 		return (1/(np.sqrt(2*np.pi) * ecart_type**2)) * np.exp(-((x-moyenne)**2)/(2*ecart_type**2))
