@@ -23,7 +23,7 @@ En gros, vous allez :
 
 class BestCase:
     def __init__(self):
-        self.accuracy = 0
+        self.error = 1
         self.nbNodes = 0
         self.nbFolds = 0
         self.nbLayers = 1
@@ -53,25 +53,22 @@ for datasetNo in range(len(datasets)):
     # nodes = 4
     for nodes in range(4, 51):
         classifierNeuralNet = NeuralNet(nbHiddenLayers=1, nbNodesInHiddenLayers=nodes)
-        avgAccuracy = 0
+        avgError = 0
         for fold in range(folds - 1):
             classifierNeuralNet.train(train_fold[fold], train_labels_fold[fold])
-            avgAccuracy += classifierNeuralNet.test(train_fold[folds - 1], train_labels_fold[folds - 1])
+            avgError += classifierNeuralNet.test(train_fold[folds - 1], train_labels_fold[folds - 1], True)
 
-        accuracy = avgAccuracy / (folds - 1)
-        # print("Accuracy: {0:.2f}%, nbNodes: {1:2d}, nbFolds: {2}".format(accuracy, nodes, folds))
+        error = avgError / (folds - 1)
+        # print("Erreur: {0:.4f}%, nbNodes: {1:2d}".format(error * 100, nodes))
 
-        if accuracy > best_case.accuracy:
-            best_case.accuracy = accuracy
+        if error < best_case.error:
+            best_case.error = error
             best_case.nbNodes = nodes
-            best_case.nbFolds = folds
 
     print(
-        "Meilleur cas pour dataset #{0}: {1:.2f}%, nbNodes: {2}, nbFolds: {3}".format(datasetNo, best_case.accuracy,
-                                                                                      best_case.nbNodes,
-                                                                                      best_case.nbFolds))
+        "Meilleur cas pour dataset #{0}: {1:.2f}%, nbNodes: {2}".format(datasetNo, best_case.error * 100, best_case.nbNodes))
 print(
-    "Précision moyenne: {0:.2f}%\n".format(np.sum([best_case.accuracy for best_case in best_cases]) / len(best_cases)))
+    "Erreur moyenne: {0:.2f}%\n".format(np.sum([best_case.error for best_case in best_cases]) / len(best_cases)))
 
 for datasetNo in range(len(datasets)):
     train, train_labels, test, test_labels = datasets[datasetNo]
@@ -86,25 +83,26 @@ for datasetNo in range(len(datasets)):
     for layers in range(1, 5):
         classifierNeuralNet = NeuralNet(nbHiddenLayers=layers, nbNodesInHiddenLayers=best_case.nbNodes)
 
-        avgAccuracy = 0
+        avgError = 0
         for fold in range(folds - 1):
             classifierNeuralNet.train(train_fold[fold], train_labels_fold[fold])
-            avgAccuracy += classifierNeuralNet.test(train_fold[folds - 1], train_labels_fold[folds - 1])
+            avgError += classifierNeuralNet.test(train_fold[folds - 1], train_labels_fold[folds - 1], True)
 
-        accuracy = avgAccuracy / (folds - 1)
+        error = avgError / (folds - 1)
+        # print("Error: {0:.2f}%, nbLayers: {1}".format(error * 100, layers))
 
-        # print("Accuracy: {0:.2f}%, nbLayers: {1}".format(accuracy, layers))
-
-        if accuracy > best_case.accuracy:
-            best_case.accuracy = accuracy
+        if error < best_case.error:
+            best_case.error = error
             best_case.nbLayers = layers
     print(
-        "Meilleur cas pour dataset #{0}: {1:.2f}%, nbNodes: {2},  nbLayers: {3}".format(datasetNo, best_case.accuracy,
+        "Meilleur cas pour dataset #{0}: {1:.2f}%, nbNodes: {2:2d},  nbLayers: {3}".format(datasetNo,
+                                                                                        best_case.error * 100,
                                                                                         best_case.nbNodes,
                                                                                         best_case.nbLayers))
 
 print(
-    "Précision moyenne: {0:.2f}%\n".format(np.sum([best_case.accuracy for best_case in best_cases]) / len(best_cases)))
+    "Erreur moyenne: {0:.2f}%\n".format(
+        np.sum([best_case.error for best_case in best_cases]) / len(best_cases) * 100))
 
 nbEpochs = 32
 for datasetNo in range(len(datasets)):
@@ -115,22 +113,22 @@ for datasetNo in range(len(datasets)):
     classifierNeuralNet = NeuralNet(nbHiddenLayers=best_case.nbLayers, nbNodesInHiddenLayers=best_case.nbNodes)
     for epoch in range(1, nbEpochs + 1):
         classifierNeuralNet.train(train, train_labels)
-        accuracy = classifierNeuralNet.test(test, test_labels)
+        error = classifierNeuralNet.test(test, test_labels, True)
 
-        # print("Accuracy: {0:.2f}%".format(accuracy))
+        # print("Error: {0:.2f}%".format(error * 100))
 
-        if best_case.epoch is 0 or accuracy > best_case.accuracy:
-            best_case.accuracy = accuracy
+        if best_case.epoch is 0 or error < best_case.error:
+            best_case.error = error
             best_case.epoch = epoch
 
     print(
         "Meilleur cas pour dataset #{0}: {1:.2f}%, nbNodes: {2:2d},  nbLayers: {3:2d}, epoch #{4:2d}".format(datasetNo,
-                                                                                                             best_case.accuracy,
+                                                                                                             best_case.error * 100,
                                                                                                              best_case.nbNodes,
                                                                                                              best_case.nbLayers,
                                                                                                              best_case.epoch))
 print(
-    "Précision moyenne: {0:.2f}%\n".format(np.sum([best_case.accuracy for best_case in best_cases]) / len(best_cases)))
+    "Erreur moyenne: {0:.2f}%\n".format(np.sum([best_case.error for best_case in best_cases]) / len(best_cases) * 100))
 
 # Initializer vos paramètres
 

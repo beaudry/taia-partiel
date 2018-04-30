@@ -63,7 +63,7 @@ class Layer:
 class Node:
     def __init__(self, nb_inputs):
         self.bias = np.random.random()
-        self.weights = np.random.random(nb_inputs) / 8
+        self.weights = np.random.random(nb_inputs) / 8.1
         self.inputs = 0
         self.value = 0
         self.theta = 0
@@ -163,7 +163,7 @@ class NeuralNet:
 
         return int(self.output_layer.getValues()[0])
 
-    def test(self, test, test_labels):
+    def test(self, test, test_labels, returnAverageError=False):
         """
         c'est la méthode qui va tester votre modèle sur les données de test
         l'argument test est une matrice de type Numpy et de taille nxm, avec
@@ -186,24 +186,23 @@ class NeuralNet:
         """
         matrix_size = 3
         confusion_matrix = np.zeros((matrix_size, matrix_size), dtype=int)
+        error_sum = 0
 
         for i in range(len(test)):
             prediction = self.predict(test[i], test_labels[i])
             confusion_matrix[prediction][test_labels[i]] += 1
+            error_sum += (prediction - int(test_labels[i])) ** 2
 
-        return np.trace(confusion_matrix) / float(len(test)) * 100
+        average_error = error_sum / len(test)
+
+        if returnAverageError:
+            return average_error
 
         print("–" * 30)
         print("Matrice de confusion :")
         print(confusion_matrix)
         print("–" * 30)
         print("Accuracy : {0}%".format(np.trace(confusion_matrix) / float(len(test)) * 100))
-        print("–" * 30)
-        for i in range(matrix_size):
-            print("LABEL {0}".format(i))
-            print("Precision : {0}".format(confusion_matrix[i][i] / float(confusion_matrix.sum(axis=1)[i])))
-            print("Recall : {0}".format(confusion_matrix[i][i] / float(confusion_matrix.sum(axis=0)[i])))
-            print("–" * 30)
 
     def printWeights(self):
         print(np.array([layer.getWeights() for layer in self.layers]))
