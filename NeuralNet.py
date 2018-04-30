@@ -5,6 +5,7 @@ import heapq
 
 ALPHA = 0.01
 
+
 def ReLU(value):
     # return value
     return max(0, value)
@@ -62,7 +63,7 @@ class Layer:
 class Node:
     def __init__(self, nb_inputs):
         self.bias = np.random.random()
-        self.weights = np.random.random(nb_inputs) / 9
+        self.weights = np.random.random(nb_inputs) / 8
         self.inputs = 0
         self.value = 0
         self.theta = 0
@@ -89,7 +90,7 @@ class NeuralNet:
         c'est à vous d'utiliser vos propres notations
         """
         np.random.seed(0)
-        nb_layers = kwargs.get("nbHiddenLayers") + 2
+        nb_layers = 2 + kwargs.get("nbHiddenLayers")
         nb_nodes = kwargs.get("nbNodesInHiddenLayers")
         self.layers = [Layer(16, 1)]
 
