@@ -4,6 +4,7 @@ import sys
 import load_datasets
 from BayesNaif import BayesNaif # importer la classe du classifieur bayesien
 from Knn import Knn # importer la classe du Knn
+from DecisionTree import DecisionTree
 #importer d'autres fichiers et classes si vous en avez développés
 
 
@@ -23,9 +24,10 @@ En gros, vous allez :
 # Initializer/instanciez vos classifieurs avec leurs paramètres
 classifierKnn = Knn()
 classifierBN = BayesNaif()
+classifierDT = DecisionTree()
 
 # Charger/lire les datasets
-train, train_labels, test, test_labels = load_datasets.load_monks_dataset(2)
+train, train_labels, test, test_labels = load_datasets.load_congressional_dataset(0.65)
 # train, train_labels, test, test_labels = load_datasets.load_monks_dataset(1)
 # train, train_labels, test, test_labels = load_datasets.load_monks_dataset(2)
 # train, train_labels, test, test_labels = load_datasets.load_monks_dataset(3)
@@ -34,19 +36,20 @@ train, train_labels, test, test_labels = load_datasets.load_monks_dataset(2)
 # Entrainez votre classifieur
 import time
 start_time = time.time()
-classifierKnn.train(train, train_labels)
+classifierDT.train(train, train_labels)
 print("--- %s seconds ---" % (time.time() - start_time))
 
-start_time = time.time()
-classifierBN.train(train, train_labels)
-print("--- %s seconds ---" % (time.time() - start_time))
+#start_time = time.time()
+#classifierBN.train(train, train_labels)
+#print("--- %s seconds ---" % (time.time() - start_time))
+
 
 
 # Tester votre classifieur
-start_time = time.time()
-classifierKnn.test(test, test_labels)
-print("--- %s seconds ---" % (time.time() - start_time))
+#tart_time = time.time()
+#classifierKnn.test(test, test_labels)
+#print("--- %s seconds ---" % (time.time() - start_time))
 
-start_time = time.time()
-classifierBN.test(test, test_labels)
-print("--- %s seconds ---" % (time.time() - start_time))
+#start_time = time.time()
+#classifierBN.test(test, test_labels)
+#print("--- %s seconds ---" % (time.time() - start_time))
