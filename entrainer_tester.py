@@ -79,7 +79,7 @@ for datasetNo in range(len(datasets)):
 
 pyplot.title('Average error per number of neurons')
 pyplot.legend(datasetsNames)
-pyplot.savefig("images/" + datasetsNames[datasetNo] + " error.png")
+pyplot.savefig("images/" + datasetsNames[datasetNo] + "nodes error.png")
 pyplot.show()
 # print(
 #     "Erreur moyenne: {0:.2f}%\n".format(np.sum([best_case.error for best_case in best_cases]) / len(best_cases) * 100))
@@ -121,7 +121,7 @@ for datasetNo in range(len(datasets)):
 
 pyplot.legend(datasetsNames)
 pyplot.title("Learning curve")
-pyplot.savefig(datasetsNames[datasetNo] + " error.png")
+pyplot.savefig(datasetsNames[datasetNo] + "layers error.png")
 pyplot.show()
 
 print(
