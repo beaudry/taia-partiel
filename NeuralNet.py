@@ -3,7 +3,7 @@ import numpy as np
 import math
 import heapq
 
-ALPHA = 0.001
+ALPHA = 0.01
 
 def ReLU(value):
     # return value

@@ -124,11 +124,11 @@ for datasetNo in range(len(datasets)):
             best_case.epoch = epoch
 
     print(
-        "Meilleur cas pour dataset #{0}: {1:.2f}%, nbNodes: {2},  nbLayers: {3}, epoch #{4}".format(datasetNo,
-                                                                                                    best_case.accuracy,
-                                                                                                    best_case.nbNodes,
-                                                                                                    best_case.nbLayers,
-                                                                                                    best_case.epoch))
+        "Meilleur cas pour dataset #{0}: {1:.2f}%, nbNodes: {2:2d},  nbLayers: {3:2d}, epoch #{4:2d}".format(datasetNo,
+                                                                                                             best_case.accuracy,
+                                                                                                             best_case.nbNodes,
+                                                                                                             best_case.nbLayers,
+                                                                                                             best_case.epoch))
 print(
     "Précision moyenne: {0:.2f}%\n".format(np.sum([best_case.accuracy for best_case in best_cases]) / len(best_cases)))
 
