@@ -2,9 +2,11 @@
 import numpy as np
 import sys
 import load_datasets
-from BayesNaif import BayesNaif # importer la classe du classifieur bayesien
-from Knn import Knn # importer la classe du Knn
-#importer d'autres fichiers et classes si vous en avez développés
+from BayesNaif import BayesNaif  # importer la classe du classifieur bayesien
+from Knn import Knn  # importer la classe du Knn
+from NeuralNet import NeuralNet  # importer la classe du Knn
+
+# importer d'autres fichiers et classes si vous en avez développés
 
 
 """
@@ -18,35 +20,148 @@ En gros, vous allez :
 
 """
 
+
+class BestCase:
+    def __init__(self):
+        self.accuracy = 0
+        self.nbNodes = 0
+        self.nbFolds = 0
+        self.nbLayers = 1
+        self.epoch = 0
+
+
+datasets = [load_datasets.load_iris_dataset(0.65),
+            load_datasets.load_monks_dataset(1),
+            load_datasets.load_monks_dataset(2),
+            load_datasets.load_monks_dataset(3),
+            load_datasets.load_congressional_dataset(0.5)]
+
+best_cases = [BestCase(), BestCase(), BestCase(), BestCase(), BestCase()]
+
+folds = 6
+
+for datasetNo in range(len(datasets)):
+    train, train_labels, test, test_labels = datasets[datasetNo]
+    best_case = best_cases[datasetNo]
+    train = train[:len(train) - len(train) % folds]
+    train_labels = train_labels[:len(train_labels) - len(train_labels) % folds]
+
+    # for folds in range(5, 11):
+    #     if len(train) % folds is 0:
+    train_fold = np.split(train, folds)
+    train_labels_fold = np.split(train_labels, folds)
+    # nodes = 4
+    for nodes in range(4, 51):
+        classifierNeuralNet = NeuralNet(nbHiddenLayers=1, nbNodesInHiddenLayers=nodes)
+        avgAccuracy = 0
+        for fold in range(folds - 1):
+            classifierNeuralNet.train(train_fold[fold], train_labels_fold[fold])
+            avgAccuracy += classifierNeuralNet.test(train_fold[folds - 1], train_labels_fold[folds - 1])
+
+        accuracy = avgAccuracy / (folds - 1)
+        # print("Accuracy: {0:.2f}%, nbNodes: {1:2d}, nbFolds: {2}".format(accuracy, nodes, folds))
+
+        if accuracy > best_case.accuracy:
+            best_case.accuracy = accuracy
+            best_case.nbNodes = nodes
+            best_case.nbFolds = folds
+
+    print(
+        "Meilleur cas pour dataset #{0}: {1:.2f}%, nbNodes: {2}, nbFolds: {3}".format(datasetNo, best_case.accuracy,
+                                                                                      best_case.nbNodes,
+                                                                                      best_case.nbFolds))
+print(
+    "Précision moyenne: {0:.2f}%\n".format(np.sum([best_case.accuracy for best_case in best_cases]) / len(best_cases)))
+
+for datasetNo in range(len(datasets)):
+    train, train_labels, test, test_labels = datasets[datasetNo]
+    best_case = best_cases[datasetNo]
+
+    train = train[:len(train) - len(train) % folds]
+    train_labels = train_labels[:len(train_labels) - len(train_labels) % folds]
+
+    train_fold = np.split(train, folds)
+    train_labels_fold = np.split(train_labels, folds)
+
+    for layers in range(1, 5):
+        classifierNeuralNet = NeuralNet(nbHiddenLayers=layers, nbNodesInHiddenLayers=best_case.nbNodes)
+
+        avgAccuracy = 0
+        for fold in range(folds - 1):
+            classifierNeuralNet.train(train_fold[fold], train_labels_fold[fold])
+            avgAccuracy += classifierNeuralNet.test(train_fold[folds - 1], train_labels_fold[folds - 1])
+
+        accuracy = avgAccuracy / (folds - 1)
+
+        # print("Accuracy: {0:.2f}%, nbLayers: {1}".format(accuracy, layers))
+
+        if accuracy > best_case.accuracy:
+            best_case.accuracy = accuracy
+            best_case.nbLayers = layers
+    print(
+        "Meilleur cas pour dataset #{0}: {1:.2f}%, nbNodes: {2},  nbLayers: {3}".format(datasetNo, best_case.accuracy,
+                                                                                        best_case.nbNodes,
+                                                                                        best_case.nbLayers))
+
+print(
+    "Précision moyenne: {0:.2f}%\n".format(np.sum([best_case.accuracy for best_case in best_cases]) / len(best_cases)))
+
+nbEpochs = 32
+for datasetNo in range(len(datasets)):
+    train, train_labels, test, test_labels = datasets[datasetNo]
+
+    best_case = best_cases[datasetNo]
+
+    classifierNeuralNet = NeuralNet(nbHiddenLayers=best_case.nbLayers, nbNodesInHiddenLayers=best_case.nbNodes)
+    for epoch in range(1, nbEpochs + 1):
+        classifierNeuralNet.train(train, train_labels)
+        accuracy = classifierNeuralNet.test(test, test_labels)
+
+        # print("Accuracy: {0:.2f}%".format(accuracy))
+
+        if best_case.epoch is 0 or accuracy > best_case.accuracy:
+            best_case.accuracy = accuracy
+            best_case.epoch = epoch
+
+    print(
+        "Meilleur cas pour dataset #{0}: {1:.2f}%, nbNodes: {2},  nbLayers: {3}, epoch #{4}".format(datasetNo,
+                                                                                                    best_case.accuracy,
+                                                                                                    best_case.nbNodes,
+                                                                                                    best_case.nbLayers,
+                                                                                                    best_case.epoch))
+print(
+    "Précision moyenne: {0:.2f}%\n".format(np.sum([best_case.accuracy for best_case in best_cases]) / len(best_cases)))
+
 # Initializer vos paramètres
 
 # Initializer/instanciez vos classifieurs avec leurs paramètres
-classifierKnn = Knn()
-classifierBN = BayesNaif()
+# classifierKnn = Knn()
+# classifierBN = BayesNaif()
 
 # Charger/lire les datasets
-train, train_labels, test, test_labels = load_datasets.load_iris_dataset(0.65)
+# train, train_labels, test, test_labels = load_datasets.load_iris_dataset(0.65)
 # train, train_labels, test, test_labels = load_datasets.load_monks_dataset(1)
 # train, train_labels, test, test_labels = load_datasets.load_monks_dataset(2)
 # train, train_labels, test, test_labels = load_datasets.load_monks_dataset(3)
 # train, train_labels, test, test_labels = load_datasets.load_congressional_dataset(0.5)
 
 # Entrainez votre classifieur
-import time
-start_time = time.time()
-classifierKnn.train(train, train_labels)
-print("--- %s seconds ---" % (time.time() - start_time))
-
-start_time = time.time()
-classifierBN.train(train, train_labels)
-print("--- %s seconds ---" % (time.time() - start_time))
-
-
-# Tester votre classifieur
-start_time = time.time()
-classifierKnn.test(test, test_labels)
-print("--- %s seconds ---" % (time.time() - start_time))
-
-start_time = time.time()
-classifierBN.test(test, test_labels)
-print("--- %s seconds ---" % (time.time() - start_time))
+# import time
+# start_time = time.time()
+# classifierNeuralNet.train(train, train_labels)
+# classifierKnn.train(train, train_labels)
+# print("--- %s seconds ---" % (time.time() - start_time))
+#
+# start_time = time.time()
+# classifierBN.train(train, train_labels)
+# print("--- %s seconds ---" % (time.time() - start_time))
+#
+#
+# # Tester votre classifieur
+# start_time = time.time()
+# classifierKnn.test(test, test_labels)
+# print("--- %s seconds ---" % (time.time() - start_time))
+#
+# start_time = time.time()
+# classifierBN.test(test, test_labels)
+# print("--- %s seconds ---" % (time.time() - start_time))
