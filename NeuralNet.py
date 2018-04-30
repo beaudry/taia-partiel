@@ -184,7 +184,7 @@ class NeuralNet:
         Bien entendu ces tests doivent etre faits sur les données de test seulement
 
         """
-        matrix_size = 3
+        matrix_size = np.max(test_labels) + 1
         confusion_matrix = np.zeros((matrix_size, matrix_size), dtype=int)
         error_sum = 0
 
@@ -202,7 +202,7 @@ class NeuralNet:
         print("Matrice de confusion :")
         print(confusion_matrix)
         print("–" * 30)
-        print("Accuracy : {0}%".format(np.trace(confusion_matrix) / float(len(test)) * 100))
+        print("Accuracy : {0:.2f}%".format(np.trace(confusion_matrix) / float(len(test)) * 100))
 
     def printWeights(self):
         print(np.array([layer.getWeights() for layer in self.layers]))
