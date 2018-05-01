@@ -147,9 +147,9 @@ for datasetNo in range(len(datasets)):
     pyplot.savefig("images/" + datasetsNames[datasetNo] + " weights comparison.png")
     pyplot.show()
 
-print(
-    "Erreur moyenne: {0:.2f}%\n".format(
-        np.sum([best_case.error for best_case in best_cases]) / len(best_cases) * 100))
+# print(
+#     "Erreur moyenne: {0:.2f}%\n".format(
+#         np.sum([best_case.error for best_case in best_cases]) / len(best_cases) * 100))
 
 nbEpochs = 32
 for datasetNo in range(len(datasets)):
@@ -174,12 +174,12 @@ for datasetNo in range(len(datasets)):
     print(datasetsNames[datasetNo])
     classifierNeuralNet.test(test, test_labels)
     #
-    print(
-        "Meilleur cas pour dataset #{0}: {1:.2f}%, nbNodes: {2:2d},  nbLayers: {3:2d}, epoch #{4:2d}".format(datasetNo,
-                                                                                                             best_case.error * 100,
-                                                                                                             best_case.nbNodes,
-                                                                                                             best_case.nbLayers,
-                                                                                                             best_case.epoch))
+    # print(
+    #     "Meilleur cas pour dataset #{0}: {1:.2f}%, nbNodes: {2:2d},  nbLayers: {3:2d}, epoch #{4:2d}".format(datasetNo,
+    #                                                                                                          best_case.error * 100,
+    #                                                                                                          best_case.nbNodes,
+    #                                                                                                          best_case.nbLayers,
+    #                                                                                                          best_case.epoch))
 
 pyplot.title('Average error per epoch')
 pyplot.legend(datasetsNames)
