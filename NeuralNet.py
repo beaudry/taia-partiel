@@ -1,13 +1,10 @@
 # coding=UTF-8
 import numpy as np
-import math
-import heapq
 
 ALPHA = 0.01
 
 
 def ReLU(value):
-    # return value
     return max(0, value)
 
 
@@ -40,10 +37,8 @@ class Layer:
             self.nodes[i].backward(weights[i], thetas)
 
     def updateWeights(self, previous_layer):
-        # values = previous_layer.getValues()
         for i in range(len(previous_layer)):
             for j in range(len(self)):
-                # print(self.getThetas()[j])
                 self.nodes[j].weights[i] += ALPHA * previous_layer.getValues()[i] * self.nodes[j].theta
         self.nodes[j].bias += ALPHA * self.nodes[j].theta
 
@@ -73,16 +68,13 @@ class Node:
         self.theta = 0
 
     def forward(self, *aN):
-        # print(self.weights, aN)
         self.inputs = np.sum(self.weights * aN) + self.bias
         self.value = ReLU(self.inputs)
 
     def backward(self, weights, thetas):
         self.theta = ReLU_prime(self.inputs) * np.sum(weights * thetas)
-        # print(self.inputs, weights, thetas)
 
     def setTheta(self, expectedValue):
-        # print(self.inputs)
         self.theta = ReLU_prime(self.inputs) * (expectedValue - self.value)
 
 
@@ -136,13 +128,8 @@ class NeuralNet:
         nous allons faire d'autres tests sur les données de test dans la méthode test()
         """
 
-        # print(np.array([self.layers[i].getWeights() for i in range(len(self))]))
-
         for i in range(len(train)):
-            # print(self.output_layer.getWeights())
             self.predict(train[i], train_labels[i])
-            # print(self.predict(train[i], train_labels[i]), train_labels[i])
-
             self.output_layer.setThetas([train_labels[i]])
 
             for l in reversed(range(len(self) - 2)):
@@ -150,8 +137,6 @@ class NeuralNet:
 
             for l in range(1, len(self)):
                 self.layers[l].updateWeights(self.layers[l - 1])
-
-        # print(np.array([self.layers[i].getWeights() for i in range(len(self))]))
 
     def predict(self, exemple, label):
         """
@@ -189,7 +174,8 @@ class NeuralNet:
         Bien entendu ces tests doivent etre faits sur les données de test seulement
 
         """
-        matrix_size = np.max(test_labels) + 100 # Parce que des fois le réseau retourne des chiffres plus grand que la limite des labels
+        matrix_size = np.max(
+            test_labels) + 100  # Parce que des fois le réseau retourne des chiffres plus grand que la limite des labels
         confusion_matrix = np.zeros((matrix_size, matrix_size), dtype=int)
         error_sum = 0
 
