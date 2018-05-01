@@ -174,8 +174,7 @@ class NeuralNet:
         Bien entendu ces tests doivent etre faits sur les données de test seulement
 
         """
-        matrix_size = np.max(
-            test_labels) + 1
+        matrix_size = np.max(test_labels) + 1 # il est possible qu'il soit nécessaire d'augmenter ce chiffre car le réseau de neurone retourne des valeurs en dehors du domaine prévu.
         confusion_matrix = np.zeros((matrix_size, matrix_size), dtype=int)
         error_sum = 0
 

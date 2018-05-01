@@ -150,7 +150,7 @@ for datasetNo in range(len(datasets)):
     pyplot.plot(range(nbEpochs), errors)
     print()
     print(datasetsNames[datasetNo])
-    print("Entraînement:"
+    print("Entraînement:")
     classifierNeuralNet.test(train, train_labels)
     print("Test:")
     classifierNeuralNet.test(test, test_labels)
