@@ -1,12 +1,10 @@
 # coding=UTF-8
 import numpy as np
-import sys
+import time
 
 from matplotlib import pyplot
 
 import load_datasets
-from BayesNaif import BayesNaif  # importer la classe du classifieur bayesien
-from Knn import Knn  # importer la classe du Knn
 from NeuralNet import NeuralNet
 from DecisionTree import DecisionTree
 
@@ -129,8 +127,20 @@ for datasetNo in range(len(datasets)):
 
     errors = []
     for epoch in range(1, nbEpochs + 1):
+        if epoch is 1:
+            start_time = time.time()
+
         classifierNeuralNet.train(train, train_labels)
+
+        if epoch is 1:
+            print("--- %s seconds ---" % (time.time() - start_time))
+            start_time = time.time()
+
         error = classifierNeuralNet.test(test, test_labels, True)
+
+        if epoch is 1:
+            print("--- %s seconds ---" % (time.time() - start_time))
+
         errors.append(error)
 
         if best_case.epoch is 0 or error < best_case.error:
@@ -140,6 +150,9 @@ for datasetNo in range(len(datasets)):
     pyplot.plot(range(nbEpochs), errors)
     print()
     print(datasetsNames[datasetNo])
+    print("Entraînement:"
+    classifierNeuralNet.test(train, train_labels)
+    print("Test:")
     classifierNeuralNet.test(test, test_labels)
 
 pyplot.title('Average error per epoch')
@@ -160,7 +173,6 @@ train, train_labels, test, test_labels = load_datasets.load_iris_dataset(0.65)
 # train, train_labels, test, test_labels = load_datasets.load_congressional_dataset(0.5)
 
 # Entrainez votre classifieur
-import time
 
 start_time = time.time()
 classifierDT.train(train, train_labels)

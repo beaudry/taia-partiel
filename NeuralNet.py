@@ -175,7 +175,7 @@ class NeuralNet:
 
         """
         matrix_size = np.max(
-            test_labels) + 100  # Parce que des fois le réseau retourne des chiffres plus grand que la limite des labels
+            test_labels) + 1
         confusion_matrix = np.zeros((matrix_size, matrix_size), dtype=int)
         error_sum = 0
 
