@@ -113,6 +113,9 @@ class Node:
 		self.subtree(data, attributes, labels)
 		return
 		
+	'''
+	Permet la création récursion des noeuds (sous-arbre) pour la construction complète de l'abre de décision
+	'''	
 	def subtree(self, data, attributes, labels):
 		self.find_best_attribut(data, labels, attributes)
 		column_best_attribute = attributes.index(self.attribute)
@@ -128,6 +131,9 @@ class Node:
 			self.children.append(Node(children_data, children_labels, children_attr, parent=self, value_from_parent=value))
 		return
 
+	'''
+	Permet de faire la prédiction de l'enfant du noead en fonction de la donnée transféré par le parent
+	'''
 	def predict(self, data):
 		if data.size == 0:
 			return
@@ -135,19 +141,18 @@ class Node:
 		if self.children is None:
 			labels = self.label * np.ones(len(data))
 			return labels
-
 		if len(data.shape) == 1:
 			data = np.reshape(data, (1, len(data)))
-		
+
 		labels = np.zeros(len(data))
-
-
 		for child in self.children:
 			child_attribute_value = data[:, self.attribute] == child.value_from_parent
 			labels[child_attribute_value] = child.predict(data[child_attribute_value])		
 		return labels
 
-
+	'''
+	Permet de trouver le meilleur attribut en fonction du gain de chaque attributs
+	'''
 	def find_best_attribut(self, data, labels, attributes):
 		higher_gain = float (-9999999)
 		for attr in attributes:
@@ -159,11 +164,17 @@ class Node:
 				print(attr)
 		return
 
+	'''
+	Calcule l'entropie
+	'''
 	def entropy(self, attributes):
 		frequency = np.unique(attributes, return_counts=True)[1]
 		prob = frequency / len(attributes)
 		return -prob.dot(np.log(prob))
 
+	'''
+	Calcule le gain
+	'''
 	def gain(self, attributes, labels):
 		values, frequency = np.unique(attributes, return_counts=True)
 		attributes_count = dict(zip(values, frequency))
