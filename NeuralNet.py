@@ -18,8 +18,8 @@ def ReLU_prime(value):
 
 
 class Layer:
-    def __init__(self, size, previous_layer_size):
-        self.nodes = [Node(previous_layer_size) for i in range(size)]
+    def __init__(self, size, previous_layer_size, weightsAtZero=False):
+        self.nodes = [Node(previous_layer_size, weightsAtZero) for i in range(size)]
 
     def setValues(self, values):
         for i in range(min(len(self), len(values))):
@@ -61,9 +61,13 @@ class Layer:
 
 
 class Node:
-    def __init__(self, nb_inputs):
-        self.bias = np.random.random()
-        self.weights = np.random.random(nb_inputs) / 8.1
+    def __init__(self, nb_inputs, weightsAtZero):
+        if weightsAtZero:
+            self.bias = 0
+            self.weights = np.zeros(nb_inputs)
+        else:
+            self.bias = np.random.random()
+            self.weights = np.random.random(nb_inputs) / 8.1
         self.inputs = 0
         self.value = 0
         self.theta = 0
@@ -92,10 +96,11 @@ class NeuralNet:
         np.random.seed(0)
         nb_layers = 2 + kwargs.get("nbHiddenLayers")
         nb_nodes = kwargs.get("nbNodesInHiddenLayers")
+        self.weightsAtZero = kwargs.get("weightsAtZero")
         self.layers = [Layer(16, 1)]
 
         for hiddenLayer in range(nb_layers - 2):
-            self.layers.append(Layer(nb_nodes, len(self.layers[hiddenLayer])))
+            self.layers.append(Layer(nb_nodes, len(self.layers[hiddenLayer]), kwargs.get("weightsAtZero")))
 
         self.layers.append(Layer(1, nb_nodes))
 
@@ -184,13 +189,14 @@ class NeuralNet:
         Bien entendu ces tests doivent etre faits sur les données de test seulement
 
         """
-        matrix_size = np.max(test_labels) + 1
+        matrix_size = np.max(test_labels) + 100
         confusion_matrix = np.zeros((matrix_size, matrix_size), dtype=int)
         error_sum = 0
 
         for i in range(len(test)):
             prediction = self.predict(test[i], test_labels[i])
-            confusion_matrix[prediction][test_labels[i]] += 1
+            if not self.weightsAtZero:
+                confusion_matrix[prediction][test_labels[i]] += 1
             error_sum += (prediction - int(test_labels[i])) ** 2
 
         average_error = error_sum / len(test)

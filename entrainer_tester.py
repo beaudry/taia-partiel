@@ -5,11 +5,12 @@ import sys
 from matplotlib import pyplot
 
 import load_datasets
-from BayesNaif import BayesNaif # importer la classe du classifieur bayesien
-from Knn import Knn # importer la classe du Knn
+from BayesNaif import BayesNaif  # importer la classe du classifieur bayesien
+from Knn import Knn  # importer la classe du Knn
 from NeuralNet import NeuralNet
 from DecisionTree import DecisionTree
-#importer d'autres fichiers et classes si vous en avez développés
+
+# importer d'autres fichiers et classes si vous en avez développés
 
 
 """
@@ -73,13 +74,13 @@ for datasetNo in range(len(datasets)):
 
     pyplot.plot(range(4, 51), errors)
 
-    # print(
-    #     "Meilleur cas pour dataset #{0}: {1:.2f}%, nbNodes: {2}".format(datasetNo, best_case.error * 100,
-    #                                                                     best_case.nbNodes))
+    print(
+        "Meilleur cas pour dataset #{0}: {1:.2f}%, nbNodes: {2}".format(datasetNo, best_case.error * 100,
+                                                                        best_case.nbNodes))
 
 pyplot.title('Average error per number of neurons')
 pyplot.legend(datasetsNames)
-pyplot.savefig("images/" + datasetsNames[datasetNo] + "nodes error.png")
+pyplot.savefig("images/neurons error.png")
 pyplot.show()
 # print(
 #     "Erreur moyenne: {0:.2f}%\n".format(np.sum([best_case.error for best_case in best_cases]) / len(best_cases) * 100))
@@ -113,16 +114,38 @@ for datasetNo in range(len(datasets)):
 
     pyplot.plot(range(3, 8), errors)
 
-    # print(
-    #     "Meilleur cas pour dataset #{0}: {1:.2f}%, nbNodes: {2:2d},  nbLayers: {3}".format(datasetNo,
-    #                                                                                        best_case.error * 100,
-    #                                                                                        best_case.nbNodes,
-    #                                                                                        best_case.nbLayers))
+    print(
+        "Meilleur cas pour dataset #{0}: {1:.2f}%, nbNodes: {2:2d},  nbLayers: {3}".format(datasetNo,
+                                                                                           best_case.error * 100,
+                                                                                           best_case.nbNodes,
+                                                                                           best_case.nbLayers))
 
 pyplot.legend(datasetsNames)
-pyplot.title("Learning curve")
-pyplot.savefig(datasetsNames[datasetNo] + "layers error.png")
+pyplot.title("Average error per number of layers")
+pyplot.savefig("images/layers error.png")
 pyplot.show()
+
+for datasetNo in range(len(datasets)):
+    train, train_labels, test, test_labels = datasets[datasetNo]
+    best_case = best_cases[datasetNo]
+
+    for i in range(2):
+        errors = []
+        classifierNeuralNet = NeuralNet(nbHiddenLayers=best_case.nbLayers, nbNodesInHiddenLayers=best_case.nbNodes,
+                                        weightsAtZero=(i is 0))
+
+        for train_number in range(len(train)):
+            classifierNeuralNet.train([train[train_number]], [train_labels[train_number]])
+            error = classifierNeuralNet.test(test, test_labels, True)
+            errors.append(error)
+            # print("Error: {0:.2f}%, nbLayers: {1}".format(error * 100, layers))
+
+        pyplot.plot(range(len(train)), errors)
+
+    pyplot.legend(["RN-ZERO", "RN-NON-ZERO"])
+    pyplot.title("Learning curve " + datasetsNames[datasetNo])
+    pyplot.savefig("images/" + datasetsNames[datasetNo] + " weights comparison.png")
+    pyplot.show()
 
 print(
     "Erreur moyenne: {0:.2f}%\n".format(
@@ -135,26 +158,33 @@ for datasetNo in range(len(datasets)):
 
     classifierNeuralNet = NeuralNet(nbHiddenLayers=best_case.nbLayers, nbNodesInHiddenLayers=best_case.nbNodes)
 
+    errors = []
     for epoch in range(1, nbEpochs + 1):
         classifierNeuralNet.train(train, train_labels)
-        # error = classifierNeuralNet.test(test, test_labels, True)
-        #
-        # # print("Error: {0:.2f}%".format(error * 100))
-        #
-        # if best_case.epoch is 0 or error < best_case.error:
-        #     best_case.error = error
-        #     best_case.epoch = epoch
+        error = classifierNeuralNet.test(test, test_labels, True)
+        errors.append(error)
+        # print("Error: {0:.2f}%".format(error * 100))
 
+        if best_case.epoch is 0 or error < best_case.error:
+            best_case.error = error
+            best_case.epoch = epoch
+
+    pyplot.plot(range(nbEpochs), errors)
     print()
     print(datasetsNames[datasetNo])
     classifierNeuralNet.test(test, test_labels)
     #
-    # print(
-    #     "Meilleur cas pour dataset #{0}: {1:.2f}%, nbNodes: {2:2d},  nbLayers: {3:2d}, epoch #{4:2d}".format(datasetNo,
-    #                                                                                                          best_case.error * 100,
-    #                                                                                                          best_case.nbNodes,
-    #                                                                                                          best_case.nbLayers,
-    #                                                                                                          best_case.epoch))
+    print(
+        "Meilleur cas pour dataset #{0}: {1:.2f}%, nbNodes: {2:2d},  nbLayers: {3:2d}, epoch #{4:2d}".format(datasetNo,
+                                                                                                             best_case.error * 100,
+                                                                                                             best_case.nbNodes,
+                                                                                                             best_case.nbLayers,
+                                                                                                             best_case.epoch))
+
+pyplot.title('Average error per epoch')
+pyplot.legend(datasetsNames)
+pyplot.savefig("images/" + datasetsNames[datasetNo] + " epochs error.png")
+pyplot.show()
 # print(
 #     "Erreur moyenne: {0:.2f}%\n".format(np.sum([best_case.error for best_case in best_cases]) / len(best_cases) * 100))
 
@@ -167,11 +197,12 @@ classifierDT = DecisionTree()
 train, train_labels, test, test_labels = load_datasets.load_iris_dataset(0.65)
 # train, train_labels, test, test_labels = load_datasets.load_monks_dataset(1)
 # train, train_labels, test, test_labels = load_datasets.load_monks_dataset(2)
-#train, train_labels, test, test_labels = load_datasets.load_monks_dataset(3)
+# train, train_labels, test, test_labels = load_datasets.load_monks_dataset(3)
 # train, train_labels, test, test_labels = load_datasets.load_congressional_dataset(0.5)
 
 # Entrainez votre classifieur
 import time
+
 start_time = time.time()
 classifierDT.train(train, train_labels)
 print("--- %s seconds ---" % (time.time() - start_time))
@@ -179,4 +210,3 @@ print("--- %s seconds ---" % (time.time() - start_time))
 start_time = time.time()
 classifierDT.test(test, test_labels)
 print("--- %s seconds ---" % (time.time() - start_time))
-
